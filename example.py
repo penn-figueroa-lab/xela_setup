@@ -61,34 +61,56 @@ if __name__ == "__main__":
     start_viz(hub)
 
 # =================================================================
-# ROS 2 Integration Example (Commented Out)
+# ROS 1 Noetic Integration Example (Commented Out)
 # =================================================================
-# To use with ROS 2, install: pip install rclpy
+# import rospy
+# from std_msgs.msg import Float32MultiArray
 #
-# import rclpy
-# from rclpy.node import Node
-# from std_msgs.msg import Float32MultiArray, MultiArrayDimension
+# def main_ros1():
+#     rospy.init_node('xela_publisher_ros1', anonymous=True)
+#     hub = XelaGeneralHub()
+#     threading.Thread(target=hub.run, daemon=True).start()
+#     
+#     publishers = {}
+#     rate = rospy.Rate(20) # 20Hz
 #
-# class XelaRosPublisher(Node):
-#     def __init__(self, hub):
-#         super().__init__('xela_publisher')
-#         self.hub = hub
-#         self.publishers_ = {}
-#         self.timer = self.create_timer(0.05, self.timer_callback) # 20Hz
-#
-#     def timer_callback(self):
-#         for s_id, grid in self.hub.sensor_grids.items():
-#             if s_id not in self.publishers_:
-#                 self.publishers_[s_id] = self.create_publisher(
-#                     Float32MultiArray, f'xela/sensor_{s_id}', 10)
+#     while not rospy.is_shutdown():
+#         for s_id, grid in hub.sensor_grids.items():
+#             if s_id not in publishers:
+#                 publishers[s_id] = rospy.Publisher(f'xela/sensor_{s_id}', Float32MultiArray, queue_size=10)
 #             
 #             msg = Float32MultiArray()
 #             msg.data = grid.flatten().tolist()
-#             self.publishers_[s_id].publish(msg)
+#             publishers[s_id].publish(msg)
+#         rate.sleep()
+
+# =================================================================
+# ROS 2 Integration Example (Commented Out)
+# =================================================================
+# import rclpy
+# from rclpy.node import Node
+# from std_msgs.msg import Float32MultiArray
 #
-# def main_ros():
-#     rclpy.init()
-#     hub = XelaGeneralHub()
-#     threading.Thread(target=hub.run, daemon=True).start()
-#     node = XelaRosPublisher(hub)
-#     rclpy.spin(node)
+# class XelaRosPublisher(Node):
+#      def __init__(self, hub):
+#          super().__init__('xela_publisher')
+#          self.hub = hub
+#          self.publishers_ = {}
+#          self.timer = self.create_timer(0.05, self.timer_callback) # 20Hz
+#
+#      def timer_callback(self):
+#          for s_id, grid in self.hub.sensor_grids.items():
+#              if s_id not in self.publishers_:
+#                  self.publishers_[s_id] = self.create_publisher(
+#                      Float32MultiArray, f'xela/sensor_{s_id}', 10)
+#              
+#              msg = Float32MultiArray()
+#              msg.data = grid.flatten().tolist()
+#              self.publishers_[s_id].publish(msg)
+#
+# def main_ros2():
+#      rclpy.init()
+#      hub = XelaGeneralHub()
+#      threading.Thread(target=hub.run, daemon=True).start()
+#      node = XelaRosPublisher(hub)
+#      rclpy.spin(node)
